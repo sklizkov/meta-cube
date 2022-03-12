@@ -72,6 +72,7 @@ module.exports = (env) => {
         title: packageJson.name,
         description: packageJson.description,
         url: packageJson.homepage,
+        repo: packageJson.repository.url,
       }),
 
       // CSS

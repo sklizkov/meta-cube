@@ -2,6 +2,10 @@
   "name": "MetaCube",
   "description": "Three.js experiment",
   "homepage": "https://sklizkov.github.io/meta-cube/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sklizkov/meta-cube"
+  },
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
