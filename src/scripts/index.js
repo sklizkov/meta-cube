@@ -34,7 +34,7 @@ playground.assetsLoading = ({ loaded, total }) => {
     }, 500)
   } else {
     if (!$loader.classList.contains('_show')) $loader.classList.add('_show')
-    $loader.innerText = loaded / total * 100 + '%'
+    $loader.innerText = Math.round(loaded / total * 100) + '%'
   }
 }
 
