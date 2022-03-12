@@ -1,19 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-		<title>{{ htmlWebpackPlugin.options.title }}</title>
+    <title>{{ htmlWebpackPlugin.options.title }}</title>
 
     <meta itemprop="name" content="{{ htmlWebpackPlugin.options.title }}">
     <meta itemprop="description" content="{{ htmlWebpackPlugin.options.description }}">
     <meta itemprop="image" content="{{ htmlWebpackPlugin.options.url }}share-1200x630.png">
-
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ htmlWebpackPlugin.options.title }}">
-    <meta name="twitter:description" content="{{ htmlWebpackPlugin.options.description }}">
-    <meta name="twitter:image" content="{{ htmlWebpackPlugin.options.url }}share-1200x600.png">
 
     <meta property="og:site_name" content="{{ htmlWebpackPlugin.options.title }}">
     <meta property="og:type" content="website">
@@ -22,16 +17,16 @@
     <meta property="og:description" content="{{ htmlWebpackPlugin.options.description }}">
     <meta property="og:image" content="{{ htmlWebpackPlugin.options.url }}share-1200x630.png">
 
-		<link rel="icon" href="/favicon.ico">
-		<link rel="icon" href="/icon.svg" type="image/svg+xml">
-		<link rel="apple-touch-icon" href="/apple.png">
+    <link rel="icon" href="favicon.ico">
+    <link rel="icon" href="icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="apple.png">
 
-		<link rel="manifest" href="/manifest.webmanifest">
-	</head>
-	<body>
-		{{> assets/canvas }}
+    <link rel="manifest" href="manifest.webmanifest">
+  </head>
+  <body>
+    {{> assets/canvas }}
 
-		{{> assets/loader }}
-		{{> assets/gitHubCorner }}
-	</body>
+    {{> assets/loader }}
+    {{> assets/gitHubCorner }}
+  </body>
 </html>
