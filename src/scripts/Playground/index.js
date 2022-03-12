@@ -113,7 +113,7 @@ export default class Playground extends PlaygroundWorld {
 
     // Debug
     if (this.gui) {
-      // ...
+      this.gui.close()
     }
   }
 

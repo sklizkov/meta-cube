@@ -8,7 +8,7 @@ const $loader = document.querySelector('.loader')
 
 // Initialize
 const playground = new Playground({
-  debug: window.location.hash === '#debug',
+  debug: true, // window.location.hash === '#debug',
 })
 
 // Assets
@@ -27,7 +27,7 @@ playground.assetsLoading = ({ loaded, total }) => {
   if (total < 1) return
 
   if (loaded === total) {
-    $loader.innerText = 'Done 🎉'
+    $loader.innerText = 'Done'
 
     setTimeout(() => {
       $loader.classList.remove('_show')
