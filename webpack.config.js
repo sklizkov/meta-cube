@@ -71,7 +71,6 @@ module.exports = (env) => {
         template: './src/templates/index.hbs',
         title: packageJson.name,
         description: packageJson.description,
-        url: packageJson.homepage,
         repo: packageJson.repository.url,
       }),
 
