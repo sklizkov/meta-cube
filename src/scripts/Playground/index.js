@@ -46,7 +46,7 @@ export default class Playground extends PlaygroundWorld {
     this.renderer.sortObjects = false
     this.renderer.outputEncoding = THREE.sRGBEncoding
 
-    this.renderer.setClearColor(0x000000, 1)
+    this.renderer.setClearColor(0xD7D7D7, 1)
     this.renderer.setSize(width, height)
     this.renderer.setPixelRatio(pixelRatio)
 
@@ -84,19 +84,19 @@ export default class Playground extends PlaygroundWorld {
 
     // Debug
     if (this.gui) {
-      // this.gui.close()
+      this.gui.close()
     }
   }
 
   assetsStart() {
     // Objects
     this.add(Background)
+    this.add(Shadow, { camera: this.camera, scene: this.scene, renderer: this.renderer })
   }
 
   assetsReady() {
     // Objects
-    this.add(Shadow, { camera: this.camera, scene: this.scene, renderer: this.renderer })
-    this.add(Cube, { amount: 24 })
+    this.add(Cube, { amount: 20 })
 
     // Mouse
     this.ext(Mouse, { camera: this.camera, renderer: this.renderer, effect: this.rgbShiftPass })

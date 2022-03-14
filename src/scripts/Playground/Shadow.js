@@ -23,7 +23,7 @@ export default class Shadow extends PlaygroundObject {
       transparent: true,
       uniforms: { 
         uTexture: { value: this.renderTarget.texture },
-        uStrength: { value: .06 },
+        uStrength: { value: .05 },
       },
       vertexShader,
       fragmentShader,

@@ -17,10 +17,10 @@ export default class Background extends PlaygroundObject {
     this.mesh = null
 
     this.colorSet = { 
-      topLeft: '#FFFFFF', 
-      topRight: '#B0B5C0', 
+      topLeft: '#EEEEEE', 
+      topRight: '#AAAAAA', 
       bottomRight: '#FFFFFF', 
-      bottomLeft: '#CCCCCC', 
+      bottomLeft: '#DDDDDD', 
     }
   }
 

@@ -37,5 +37,7 @@ void main() {
   vec3 tmp_color = vec3(0.299 * color.r + 0.587 * color.g + 0.114 * color.b);
   alpha = smoothstep(0.1, 0.9, tmp_color.x);
 
-  gl_FragColor = vec4(color, .9 - alpha) * .25;
+  float pct = distance(vUv, vec2(0.5));
+
+  gl_FragColor = vec4(color, (.9 - alpha) * (.5 - mix(0., 1., pct)));
 }
