@@ -16,10 +16,10 @@ export default class PlaygroundExtension {
    * Render
    */
   render() {
-    this.initialize()
-
     this.viewport.on('resize', next => this.resize(next))
     this.loop.on('tick', next => this.tick(next))
+
+    this.initialize()
 
     // this.loader.on('start', next => this.assetsStart(next))
     // this.loader.on('progress', next => this.assetsLoading(next))

@@ -64,6 +64,14 @@ export default class Mouse extends PlaygroundExtension {
 
     // Context Menu
     window.addEventListener('contextmenu', e => e.preventDefault())
+
+    // Camera
+    const cameraPosition = new THREE.Vector3()
+    cameraPosition.setFromSpherical(this.spherical)
+
+    this.props.camera.position.copy(cameraPosition)
+    this.props.camera.position.add(new THREE.Vector3(0, 0, 0))
+    this.props.camera.lookAt(new THREE.Vector3(0, 0, 0))
   }
 
   /**
