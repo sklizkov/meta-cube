@@ -95,11 +95,11 @@ export default class Playground extends PlaygroundWorld {
   }
 
   assetsReady() {
-    // Objects
-    this.add(Cube, { amount: 20 })
-
     // Mouse
     this.ext(Mouse, { camera: this.camera, renderer: this.renderer, effect: this.rgbShiftPass })
+
+    // Objects
+    this.add(Cube, { amount: 20 })
   }
 
   resize({ width, height, pixelRatio }) {
