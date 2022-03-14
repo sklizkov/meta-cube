@@ -14,9 +14,7 @@ const playground = new Playground({
 // Assets
 playground.assets = [
   { name: 'black', path: 'assets/black.png' },
-  { name: 'white', path: 'assets/white.png' },
   { name: 'red', path: 'assets/red.png' },
-  { name: 'orange', path: 'assets/orange.png' },
   { name: 'yellow', path: 'assets/yellow.png' },
   { name: 'green', path: 'assets/green.png' },
   { name: 'blue', path: 'assets/blue.png' },

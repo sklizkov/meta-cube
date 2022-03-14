@@ -30,7 +30,7 @@ export default class Mouse extends PlaygroundExtension {
       const normalized = normalizeWheel(e)
 
       this.wheel.delta += normalized.pixelY * .01
-      this.wheel.delta = Math.max(2, Math.min(7, this.wheel.delta))
+      this.wheel.delta = Math.max(2, Math.min(5, this.wheel.delta))
     })
 
     // Cursor

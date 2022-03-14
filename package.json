@@ -37,7 +37,6 @@
   "dependencies": {
     "lil-gui": "^0.16.0",
     "normalize-wheel": "^1.0.1",
-    "simplex-noise": "^3.0.1",
     "three": "^0.136.0"
   }
 }

@@ -6,6 +6,7 @@ uniform vec2 uStrength;
 
 varying vec2 vUv;
 
+
 vec4 blur(sampler2D image, vec2 uv, vec2 resolution, vec2 direction) {
   vec4 color = vec4(0.0);
   vec2 off1 = vec2(1.3846153846) * direction;

@@ -1,8 +1,11 @@
 import * as THREE from 'three'
 import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils.js'
-import SimplexNoise from 'simplex-noise'
 
 import { PlaygroundObject } from 'Scripts/Core'
+
+// Shaders
+import vertexShader from 'Shaders/Cube/vertex.glsl'
+import fragmentShader from 'Shaders/Cube/fragment.glsl'
 
 
 export default class Cube extends PlaygroundObject {
@@ -10,31 +13,13 @@ export default class Cube extends PlaygroundObject {
   constructor(...args) {
     super(...args)
 
-    this.geometry = null
-    this.material = null
-    this.mesh = null
-
-    this.simplex = new SimplexNoise(Math.random())
-    this.dummy = new THREE.Object3D()
-
-    this.shape = {
-      shape: 'cube',
+    this.state = {
       matcap: 'black',
-      transition: true,
-    }
-
-    this.noise = {
-      scale: .4,
-      speedX: -.2,
-      speedY: 0,
-      speedZ: 0,
     }
   }
 
   initialize() {
     // Geometry
-    // this.geometry = new THREE.BoxGeometry(1, 1, 1)
-    
     const topPlane = new THREE.PlaneGeometry(1, 1)
     topPlane.rotateX(-Math.PI / 2)
     topPlane.translate(0, 0.5, 0)
@@ -54,111 +39,87 @@ export default class Cube extends PlaygroundObject {
     this.geometry = BufferGeometryUtils.mergeBufferGeometries([ topPlane, bottomPlane, leftPlane, rightPlane ])
 
     // Material
-    this.material = new THREE.MeshMatcapMaterial()
+    this.material = new THREE.ShaderMaterial({
+      transparent: true,
+      uniforms: {
+        uTime: { value: 0 },
+        uScale: { value: 20 },
+        uSpeed: { value: new THREE.Vector3(-.2, 0, 0) },
+        uSmooth: { value: true },
+        matcap : { value: null },
+      },
+      vertexShader,
+      fragmentShader,
+    })
     this._setMatcap()
 
     // Mesh
     this.mesh = new THREE.InstancedMesh(this.geometry, this.material, Math.pow(this.props.amount, 3))
-    this.mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage)
     this.mesh.scale.set(1 / this.props.amount, 1 / this.props.amount, 1 / this.props.amount)
-    // this.mesh = new THREE.Mesh(this.geometry, this.material)
 
-
-    // Add
     this.add(this.mesh)
 
-    // Debug
-    if (this.gui) {
-      const shapeFolder = this.gui.addFolder('Shape')
+    // ...
+    const transform = new THREE.Object3D()
 
-      shapeFolder.add(this.shape, 'shape', [ 'cube', 'sphere' ]).name('⏹ Shape')
-      shapeFolder.add(this.shape, 'matcap', [ 'black', 'white', 'red', 'orange', 'yellow', 'green', 'blue' ]).name('⏺ Matcap').onChange(() => this._setMatcap())
-      shapeFolder.add(this.shape, 'transition').name('📶 Transition')
+    const aPosition = new Float32Array(Math.pow(this.props.amount * 3, 3))
 
-      // shapeFolder.close()
+    let i = 0, j = 0
 
-      const noiseFolder = this.gui.addFolder('Noise')
-
-      noiseFolder.add(this.noise, 'scale', 0, 1, .02).name('🔼 Scale')
-      noiseFolder.add(this.noise, 'speedX', -1, 1, .05).name('↘️ X')
-      noiseFolder.add(this.noise, 'speedY', -1, 1, .05).name('⬆️ Y')
-      noiseFolder.add(this.noise, 'speedZ', -1, 1, .05).name('↗️ Z')
-
-      // noiseFolder.close()
-    }
-  }
-
-  tick({ elapsedTime }) {
-    const offset = (this.props.amount - 1) / 2
-
-    let i = 0
     for (let x = 0; x < this.props.amount; x++) {
       for (let y = 0; y < this.props.amount; y++) {
         for (let z = 0; z < this.props.amount; z++) {
-          const radius = this.props.amount / 2
-          const distance = Math.sqrt(Math.pow(x - radius, 2) + Math.pow(y - radius, 2) + Math.pow(z - radius, 2))
+          const offset = (this.props.amount - 1) / 2
+          transform.position.set((offset - x) * 1.1, (offset - y) * 1.1, (offset - z) * 1.1)
+          transform.updateMatrix()
 
-          if (this.shape.shape === 'cube' || distance < radius) {
-            const
-              noiseX = x / (this.noise.scale * 50) + elapsedTime * this.noise.speedX * .002,
-              noiseY = y / (this.noise.scale * 50) + elapsedTime * this.noise.speedY * .002,
-              noiseZ = z / (this.noise.scale * 50) + elapsedTime * -this.noise.speedZ * .002
+          aPosition[j] = x
+          j++
+          aPosition[j] = y
+          j++
+          aPosition[j] = z
+          j++
 
-            const
-              posX = (offset - x) * 1.1,
-              posY = (offset - y) * 1.1,
-              posZ = (offset - z) * 1.1
-
-            let scale = 0
-
-            if (this.shape.transition) {
-              scale = this.noise.scale === 0 ? 1 : Math.min(Math.max(0, this.simplex.noise3D(noiseX, noiseY, noiseZ) * 5), 1)
-            } else {
-              if (this.noise.scale === 0) {
-                scale = 1
-              } else {
-                const n = this.simplex.noise3D(noiseX, noiseY, noiseZ)
-
-                scale = n > 0 ? 1 : 0
-              }
-            }
-
-            this.dummy.position.set(posX, posY, posZ)
-            this.dummy.scale.set(scale, scale, scale)
-
-            this.dummy.updateMatrix()
-
-            this.mesh.setMatrixAt(i, this.dummy.matrix)
-          } else {
-            const
-              posX = (offset - x) * 1.1,
-              posY = (offset - y) * 1.1,
-              posZ = (offset - z) * 1.1
-
-            const
-              scale = 0
-
-            this.dummy.position.set(posX, posY, posZ)
-            this.dummy.scale.set(scale, scale, scale)
-
-            this.dummy.updateMatrix()
-
-            this.mesh.setMatrixAt(i, this.dummy.matrix)
-          }
-
+          this.mesh.setMatrixAt(i, transform.matrix)
           i++
         }
       }
     }
 
-    this.mesh.instanceMatrix.needsUpdate = true
+    this.geometry.setAttribute('aPosition', new THREE.InstancedBufferAttribute(aPosition, 3))
+
+    // Debug
+    if (this.gui) {
+      const folder = this.gui.addFolder('Cube')
+
+      folder.add(this.state, 'matcap', [ 'black', 'red', 'green', 'blue', 'yellow' ])
+        .name('⏺ Matcap').onChange(() => this._setMatcap())
+
+      // folder.close()
+    }
+
+    if (this.gui) {
+      const folder = this.gui.addFolder('Noise')
+
+      folder.add(this.material.uniforms.uSmooth, 'value').name('📶 Smooth')
+      folder.add(this.material.uniforms.uScale, 'value', 0, 100, 1).name('📶 Scale')
+      folder.add(this.material.uniforms.uSpeed.value, 'x', -1, 1, .01).name('↘️ Speed X')
+      folder.add(this.material.uniforms.uSpeed.value, 'y', -1, 1, .01).name('⬆️ Speed Y')
+      folder.add(this.material.uniforms.uSpeed.value, 'z', -1, 1, .01).name('↗️ Speed Z')
+
+      // folder.close()
+    }
+  }
+
+  tick({ elapsedTime }) {
+    this.material.uniforms.uTime.value = elapsedTime * .001
   }
 
   _setMatcap() {
-    const matcap = this.loader.getItem(this.shape.matcap)
+    const matcap = this.loader.getItem(this.state.matcap)
     matcap.encoding = THREE.sRGBEncoding
 
-    this.material.matcap = matcap
+    this.material.uniforms.matcap.value = matcap
   }
 
 }
