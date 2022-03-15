@@ -17,11 +17,15 @@ export default class Mouse extends PlaygroundExtension {
       theta: Math.PI * 0.20, 
     }
 
-    this.spherical = new THREE.Spherical(
-      sphericalOptions.radius * 1.5,
-      sphericalOptions.phi,
-      sphericalOptions.theta
-    )
+    this.spherical = new THREE.Spherical(sphericalOptions.radius * 1.5, sphericalOptions.phi, sphericalOptions.theta)
+
+    // Camera
+    const cameraPosition = new THREE.Vector3()
+    cameraPosition.setFromSpherical(this.spherical)
+
+    this.props.camera.position.copy(cameraPosition)
+    this.props.camera.position.add(new THREE.Vector3(0, 0, 0))
+    this.props.camera.lookAt(new THREE.Vector3(0, 0, 0))
 
     // Wheel
     this.wheel = { delta: sphericalOptions.radius, shift: 0 }
@@ -64,20 +68,7 @@ export default class Mouse extends PlaygroundExtension {
 
     // Context Menu
     window.addEventListener('contextmenu', e => e.preventDefault())
-
-    // Camera
-    const cameraPosition = new THREE.Vector3()
-    cameraPosition.setFromSpherical(this.spherical)
-
-    this.props.camera.position.copy(cameraPosition)
-    this.props.camera.position.add(new THREE.Vector3(0, 0, 0))
-    this.props.camera.lookAt(new THREE.Vector3(0, 0, 0))
   }
-
-  /**
-   * Resize
-   */
-  resize({ width, height, pixelRatio }) {}
 
   /**
    * Loop

@@ -24,7 +24,7 @@ export default class Cube extends PlaygroundObject {
     topPlane.rotateX(-Math.PI / 2)
     topPlane.translate(0, 0.5, 0)
 
-    const bottomPlane = new THREE.PlaneGeometry(1, 1)
+    const bottomPlane = new THREE.PlaneGeometry(1.1, 1.1)
     bottomPlane.rotateX(Math.PI / 2)
     bottomPlane.translate(0, -0.5, 0)
 
@@ -44,7 +44,7 @@ export default class Cube extends PlaygroundObject {
       uniforms: {
         uTime: { value: 0 },
         uScale: { value: 20 },
-        uSpeed: { value: new THREE.Vector3(-.2, 0, 0) },
+        uSpeed: { value: new THREE.Vector3(-.16, 0, 0) },
         uSmooth: { value: true },
         matcap : { value: null },
       },
@@ -94,8 +94,6 @@ export default class Cube extends PlaygroundObject {
 
       folder.add(this.state, 'matcap', [ 'black', 'red', 'green', 'blue', 'yellow' ])
         .name('⏺ Matcap').onChange(() => this._setMatcap())
-
-      // folder.close()
     }
 
     if (this.gui) {
@@ -106,8 +104,6 @@ export default class Cube extends PlaygroundObject {
       folder.add(this.material.uniforms.uSpeed.value, 'x', -1, 1, .01).name('↘️ Speed X')
       folder.add(this.material.uniforms.uSpeed.value, 'y', -1, 1, .01).name('⬆️ Speed Y')
       folder.add(this.material.uniforms.uSpeed.value, 'z', -1, 1, .01).name('↗️ Speed Z')
-
-      // folder.close()
     }
   }
 

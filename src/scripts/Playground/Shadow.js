@@ -48,8 +48,6 @@ export default class Shadow extends PlaygroundObject {
       const folder = this.gui.addFolder('Shadow')
 
       folder.add(this.material.uniforms.uStrength, 'value', 0.00, 0.10, .01).name('#️⃣ Blur')
-
-      // folder.close()
     }
   }
 

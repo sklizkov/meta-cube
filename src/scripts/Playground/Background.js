@@ -12,11 +12,7 @@ export default class Background extends PlaygroundObject {
   constructor(...args) {
     super(...args)
 
-    this.geometry = null
-    this.material = null
-    this.mesh = null
-
-    this.colorSet = { 
+    this.state = { 
       topLeft: '#EEEEEE', 
       topRight: '#AAAAAA', 
       bottomRight: '#FFFFFF', 
@@ -41,27 +37,24 @@ export default class Background extends PlaygroundObject {
     this.mesh = new THREE.Mesh(this.geometry, this.material)
     this.mesh.frustumCulled = false
 
-    // Add
     this.add(this.mesh)
 
     // Debug
     if (this.gui) {
       const folder = this.gui.addFolder('Background')
 
-      folder.addColor(this.colorSet, 'topLeft').name('↖️ Top Left').onChange(() => this._setColors())
-      folder.addColor(this.colorSet, 'topRight').name('↗️ Top Right').onChange(() => this._setColors())
-      folder.addColor(this.colorSet, 'bottomRight').name('↘️ Bottom Right').onChange(() => this._setColors())
-      folder.addColor(this.colorSet, 'bottomLeft').name('↙️ Bottom Left').onChange(() => this._setColors())
-
-      // folder.close()
+      folder.addColor(this.state, 'topLeft').name('↖️ Top Left').onChange(() => this._setColors())
+      folder.addColor(this.state, 'topRight').name('↗️ Top Right').onChange(() => this._setColors())
+      folder.addColor(this.state, 'bottomRight').name('↘️ Bottom Right').onChange(() => this._setColors())
+      folder.addColor(this.state, 'bottomLeft').name('↙️ Bottom Left').onChange(() => this._setColors())
     }
   }
 
   _setColors() {
-    const topLeftColor = new THREE.Color(this.colorSet.topLeft)
-    const topRightColor = new THREE.Color(this.colorSet.topRight)
-    const bottomRightColor = new THREE.Color(this.colorSet.bottomRight)
-    const bottomLeftColor = new THREE.Color(this.colorSet.bottomLeft)
+    const topLeftColor = new THREE.Color(this.state.topLeft)
+    const topRightColor = new THREE.Color(this.state.topRight)
+    const bottomRightColor = new THREE.Color(this.state.bottomRight)
+    const bottomLeftColor = new THREE.Color(this.state.bottomLeft)
 
     const colors = new Float32Array(4 * 3)
     

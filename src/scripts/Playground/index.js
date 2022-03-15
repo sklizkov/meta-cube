@@ -3,6 +3,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
+import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader.js'
+import { RGBShiftShader } from 'three/examples/jsm/shaders/RGBShiftShader.js'
 
 // Core
 import { PlaygroundWorld } from 'Scripts/Core'
@@ -14,13 +16,6 @@ import Mouse from './Extensions/Mouse'
 import Background from './Background'
 import Cube from './Cube'
 import Shadow from './Shadow'
-
-// Shaders
-import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader.js'
-import { RGBShiftShader } from 'three/examples/jsm/shaders/RGBShiftShader.js'
-
-import vertexShader from 'Shaders/Blur/vertex.glsl'
-import fragmentShader from 'Shaders/Blur/fragment.glsl'
 
 
 export default class Playground extends PlaygroundWorld {
@@ -63,19 +58,6 @@ export default class Playground extends PlaygroundWorld {
 
     const gammaCorrectionPass = new ShaderPass(GammaCorrectionShader)
     this.effectComposer.addPass(gammaCorrectionPass)
-
-    const blurPass = new ShaderPass({
-      uniforms: {
-        tDiffuse    : { type: 't',  value: null },
-        uResolution : { type: 'v2', value: null },
-        uStrength   : { type: 'v2', value: null },
-      },
-      fragmentShader,
-      vertexShader,
-    })
-    blurPass.material.uniforms.uResolution.value = new THREE.Vector2(width, height)
-    blurPass.material.uniforms.uStrength.value = new THREE.Vector2(1, 1)
-    this.effectComposer.addPass(blurPass)
 
     this.rgbShiftPass = new ShaderPass(RGBShiftShader)
     this.rgbShiftPass.material.uniforms.amount.value = 0.0
