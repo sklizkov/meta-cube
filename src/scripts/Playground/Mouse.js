@@ -41,8 +41,8 @@ export default class Mouse extends PlaygroundExtension {
     this.cursor = { x: sphericalOptions.theta, y: sphericalOptions.phi, shiftX: 0, shiftY: 0 }
 
     document.addEventListener('mousemove', ({ clientX , clientY }) => {
-      this.cursor.x = sphericalOptions.theta + (1 - clientX / width - .5) / 2
-      this.cursor.y = sphericalOptions.phi + (1 - clientY / height - .5) / 4
+      this.cursor.x = sphericalOptions.theta + (1 - clientX / window.innerWidth - .5) / 2
+      this.cursor.y = sphericalOptions.phi + (1 - clientY / window.innerHeight - .5) / 4
     })
 
     // Double Click
@@ -73,7 +73,7 @@ export default class Mouse extends PlaygroundExtension {
   /**
    * Loop
    */
-  tick({ timestamp, deltaTime, elapsedTime, frameCount }) {
+  tick() {
     // Spherical
     this.wheel.shift = (this.wheel.delta - this.spherical.radius) * .1
     this.spherical.radius += this.wheel.shift
@@ -92,9 +92,11 @@ export default class Mouse extends PlaygroundExtension {
     this.props.camera.position.add(new THREE.Vector3(0, 0, 0))
     this.props.camera.lookAt(new THREE.Vector3(0, 0, 0))
 
-    // RGBShift
+    // Post Processing
     const shift = Math.min(Math.abs(this.wheel.shift * .1), 0.003) + Math.min(Math.abs(this.cursor.shiftX * .15), 0.003) + Math.min(Math.abs(this.cursor.shiftY * .15), 0.003)
-    this.props.effect.material.uniforms.amount.value = shift
+
+    this.props.rgbShift.material.uniforms.amount.value = shift
+    this.props.noise.uniforms.uMultiplier.value = shift * 5
   }
 
 }

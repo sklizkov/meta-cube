@@ -1,16 +1,11 @@
 import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
-import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader.js'
-import { RGBShiftShader } from 'three/examples/jsm/shaders/RGBShiftShader.js'
 
 // Core
 import { PlaygroundWorld } from 'Scripts/Core'
 
 // Extensions
-import Mouse from './Extensions/Mouse'
+import PostProcessing from './PostProcessing'
+import Mouse from './Mouse'
 
 // Objects
 import Background from './Background'
@@ -33,7 +28,7 @@ export default class Playground extends PlaygroundWorld {
     this.scene = new THREE.Scene()
 
     this.scene.add(this.camera)
-    this.scene.add(this.target)
+    this.scene.add(this.target) // !!!
 
     // Renderer
     this.renderer = new THREE.WebGLRenderer({ alpha: false, antialias: true })
@@ -48,21 +43,11 @@ export default class Playground extends PlaygroundWorld {
     this.$container.appendChild(this.renderer.domElement)
 
     // Post Processing
-    this.effectComposer = new EffectComposer(this.renderer)
-
-    this.effectComposer.setSize(width, height)
-    this.effectComposer.setPixelRatio(pixelRatio)
-
-    const renderPass = new RenderPass(this.scene, this.camera)
-    this.effectComposer.addPass(renderPass)
-
-    const gammaCorrectionPass = new ShaderPass(GammaCorrectionShader)
-    this.effectComposer.addPass(gammaCorrectionPass)
-
-    this.rgbShiftPass = new ShaderPass(RGBShiftShader)
-    this.rgbShiftPass.material.uniforms.amount.value = 0.0
-    this.rgbShiftPass.material.uniforms.angle.value = Math.PI / 180 * 45
-    this.effectComposer.addPass(this.rgbShiftPass)
+    this.postProcessing = this.ext(PostProcessing, { 
+      camera: this.camera,
+      scene: this.scene,
+      renderer: this.renderer,
+    })
 
     // Debug
     if (this.gui) {
@@ -73,12 +58,21 @@ export default class Playground extends PlaygroundWorld {
   assetsStart() {
     // Objects
     this.add(Background)
-    this.add(Shadow, { camera: this.camera, scene: this.scene, renderer: this.renderer })
+    this.add(Shadow, { 
+      camera: this.camera,
+      scene: this.scene,
+      renderer: this.renderer,
+    })
   }
 
   assetsReady() {
     // Mouse
-    this.ext(Mouse, { camera: this.camera, renderer: this.renderer, effect: this.rgbShiftPass })
+    this.ext(Mouse, { 
+      camera: this.camera,
+      renderer: this.renderer,
+      rgbShift: this.postProcessing.rgbShiftPass,
+      noise: this.postProcessing.noisePass,
+    })
 
     // Objects
     this.add(Cube, { amount: 20 })
@@ -92,15 +86,10 @@ export default class Playground extends PlaygroundWorld {
     // Renderer
     this.renderer.setSize(width, height)
     this.renderer.setPixelRatio(pixelRatio)
-
-    // Post Processing
-    this.effectComposer.setSize(width, height)
-    this.effectComposer.setPixelRatio(pixelRatio)
   }
 
-  tick({ timestamp, deltaTime, elapsedTime, frameCount }) {
-    this.effectComposer.render()
-    // this.renderer.render(this.scene, this.camera)
-  }
+  // tick({ timestamp, deltaTime, elapsedTime, frameCount }) {
+  //   this.renderer.render(this.scene, this.camera)
+  // }
 
 }
