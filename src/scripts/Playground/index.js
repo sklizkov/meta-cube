@@ -1,4 +1,6 @@
 import * as THREE from 'three'
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 
 // Core
 import { PlaygroundWorld } from 'Scripts/Core'
@@ -42,11 +44,19 @@ export default class Playground extends PlaygroundWorld {
 
     this.$container.appendChild(this.renderer.domElement)
 
+    // Effect Composer
+    this.effectComposer = new EffectComposer(this.renderer)
+
+    this.effectComposer.setSize(width, height)
+    this.effectComposer.setPixelRatio(pixelRatio)
+
+    // Render Pass
+    this.renderPass = new RenderPass(this.scene, this.camera)
+    this.effectComposer.addPass(this.renderPass)
+
     // Post Processing
     this.postProcessing = this.ext(PostProcessing, { 
-      camera: this.camera,
-      scene: this.scene,
-      renderer: this.renderer,
+      effectComposer: this.effectComposer, 
     })
 
     // Debug
@@ -70,8 +80,7 @@ export default class Playground extends PlaygroundWorld {
     this.ext(Mouse, { 
       camera: this.camera,
       renderer: this.renderer,
-      rgbShift: this.postProcessing.rgbShiftPass,
-      noise: this.postProcessing.noisePass,
+      finalPass: this.postProcessing.finalPass,
     })
 
     // Objects
@@ -86,10 +95,15 @@ export default class Playground extends PlaygroundWorld {
     // Renderer
     this.renderer.setSize(width, height)
     this.renderer.setPixelRatio(pixelRatio)
+
+    // Effect Composer
+    this.effectComposer.setSize(width, height)
+    this.effectComposer.setPixelRatio(pixelRatio)
   }
 
-  // tick({ timestamp, deltaTime, elapsedTime, frameCount }) {
-  //   this.renderer.render(this.scene, this.camera)
-  // }
+  tick({ timestamp, deltaTime, elapsedTime, frameCount }) {
+    // this.renderer.render(this.scene, this.camera)
+    this.effectComposer.render()
+  }
 
 }

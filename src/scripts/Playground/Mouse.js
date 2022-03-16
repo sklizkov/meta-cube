@@ -95,8 +95,7 @@ export default class Mouse extends PlaygroundExtension {
     // Post Processing
     const shift = Math.min(Math.abs(this.wheel.shift * .1), 0.003) + Math.min(Math.abs(this.cursor.shiftX * .15), 0.003) + Math.min(Math.abs(this.cursor.shiftY * .15), 0.003)
 
-    this.props.rgbShift.material.uniforms.amount.value = shift
-    this.props.noise.uniforms.uMultiplier.value = shift * 5
+    this.props.finalPass.uniforms.uMultiplier.value = shift
   }
 
 }
