@@ -107,8 +107,8 @@ export default class Cube extends PlaygroundObject {
     }
   }
 
-  tick({ elapsedTime }) {
-    this.material.uniforms.uTime.value = elapsedTime * .001
+  tick({ deltaTime }) {
+    this.material.uniforms.uTime.value += deltaTime * .001
   }
 
   _setMatcap() {
