@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 
@@ -22,7 +23,7 @@ export default class Playground extends PlaygroundWorld {
     const { width, height, pixelRatio } = this.viewport
 
     // Camera
-    this.camera = new THREE.PerspectiveCamera(50, width / height, .1, 20)
+    this.camera = new THREE.PerspectiveCamera(50, width / height, .5, 10)
 
     this.camera.rotation.reorder('YXZ')
 
@@ -38,7 +39,7 @@ export default class Playground extends PlaygroundWorld {
     this.renderer.sortObjects = false
     this.renderer.outputEncoding = THREE.sRGBEncoding
 
-    this.renderer.setClearColor(0xD7D7D7, 1)
+    this.renderer.setClearColor(0xffffff, 1)
     this.renderer.setSize(width, height)
     this.renderer.setPixelRatio(pixelRatio)
 
@@ -61,29 +62,31 @@ export default class Playground extends PlaygroundWorld {
 
     // Debug
     if (this.gui) {
-      this.gui.close()
+      // Orbit Controls
+      this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement)
+      this.orbitControls.enableDamping = false
+      this.orbitControls.enabled = true
     }
   }
 
   assetsStart() {
-    // Objects
-    this.add(Background)
+    const background = this.add(Background)
+
     this.add(Shadow, { 
       camera: this.camera,
       scene: this.scene,
       renderer: this.renderer,
+      background: background,
     })
   }
 
   assetsReady() {
-    // Mouse
     this.ext(Mouse, { 
       camera: this.camera,
       renderer: this.renderer,
       finalPass: this.postProcessing.finalPass,
     })
 
-    // Objects
     this.add(Cube, { amount: 20 })
   }
 
@@ -102,7 +105,8 @@ export default class Playground extends PlaygroundWorld {
   }
 
   tick({ timestamp, deltaTime, elapsedTime, frameCount }) {
-    // this.renderer.render(this.scene, this.camera)
+    if (this.gui) this.orbitControls.update()
+
     this.effectComposer.render()
   }
 

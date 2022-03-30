@@ -8,16 +8,18 @@ const $loader = document.querySelector('.loader')
 
 // Initialize
 const playground = new Playground({
-  debug: true, // window.location.hash === '#debug',
+  debug: window.location.hash === '#debug',
 })
 
 // Assets
 playground.assets = [
-  { name: 'black', path: 'assets/black.png' },
-  { name: 'red', path: 'assets/red.png' },
-  { name: 'yellow', path: 'assets/yellow.png' },
-  { name: 'green', path: 'assets/green.png' },
-  { name: 'blue', path: 'assets/blue.png' },
+  { name: 'black', path: 'assets/matcaps/black.png' },
+  { name: 'white', path: 'assets/matcaps/white.png' },
+  { name: 'red', path: 'assets/matcaps/red.png' },
+  { name: 'orange', path: 'assets/matcaps/orange.png' },
+  { name: 'yellow', path: 'assets/matcaps/yellow.png' },
+  { name: 'green', path: 'assets/matcaps/green.png' },
+  { name: 'blue', path: 'assets/matcaps/blue.png' },
 ]
 
 // Preloader

@@ -10,14 +10,6 @@ import fragmentShader from 'Shaders/Cube/fragment.glsl'
 
 export default class Cube extends PlaygroundObject {
 
-  constructor(...args) {
-    super(...args)
-
-    this.state = {
-      matcap: 'black',
-    }
-  }
-
   initialize() {
     // Geometry
     const topPlane = new THREE.PlaneGeometry(1, 1)
@@ -39,19 +31,31 @@ export default class Cube extends PlaygroundObject {
     this.geometry = BufferGeometryUtils.mergeBufferGeometries([ topPlane, bottomPlane, leftPlane, rightPlane ])
 
     // Material
+    const matcaps = {
+      'black': this.loader.getItem('black'),
+      'white': this.loader.getItem('white'),
+      'red': this.loader.getItem('red'),
+      'orange': this.loader.getItem('orange'),
+      'yellow': this.loader.getItem('yellow'),
+      'green': this.loader.getItem('green'),
+      'blue': this.loader.getItem('blue'),
+    }
+
+    for (let matcap in matcaps) matcaps[matcap].encoding = THREE.sRGBEncoding
+
     this.material = new THREE.ShaderMaterial({
       transparent: true,
       uniforms: {
         uTime: { value: 0 },
-        uScale: { value: 20 },
-        uSpeed: { value: new THREE.Vector3(-.16, 0, 0) },
+        uScale: { value: 22 },
+        uSpeed: { value: new THREE.Vector3(-.12, 0, 0) },
         uSmooth: { value: true },
-        matcap : { value: null },
+        uSize: { value: this.props.amount },
+        matcap : { value: Object.values(matcaps)[0] },
       },
       vertexShader,
       fragmentShader,
     })
-    this._setMatcap()
 
     // Mesh
     this.mesh = new THREE.InstancedMesh(this.geometry, this.material, Math.pow(this.props.amount, 3))
@@ -59,43 +63,35 @@ export default class Cube extends PlaygroundObject {
 
     this.add(this.mesh)
 
-    // ...
-    const transform = new THREE.Object3D()
+    // Position
+    const aPosition = new Float32Array(Math.pow(this.props.amount, 3) * 3)
 
-    const aPosition = new Float32Array(Math.pow(this.props.amount * 3, 3))
+    for (let i = 0, l = Math.pow(this.props.amount, 3); i < l; i++) {
+      const x = i % this.props.amount
+      const y = Math.floor(i / Math.pow(this.props.amount, 2))
+      const z = Math.floor(i / this.props.amount) - Math.floor(i / Math.pow(this.props.amount, 2)) * this.props.amount
 
-    let i = 0, j = 0
+      const gap = 1.1
+      const offset = -this.props.amount / 2
 
-    for (let x = 0; x < this.props.amount; x++) {
-      for (let y = 0; y < this.props.amount; y++) {
-        for (let z = 0; z < this.props.amount; z++) {
-          const offset = (this.props.amount - 1) / 2
-          transform.position.set((offset - x) * 1.1, (offset - y) * 1.1, (offset - z) * 1.1)
-          transform.updateMatrix()
-
-          aPosition[j] = x
-          j++
-          aPosition[j] = y
-          j++
-          aPosition[j] = z
-          j++
-
-          this.mesh.setMatrixAt(i, transform.matrix)
-          i++
-        }
-      }
+      aPosition[i * 3 + 0] = x * gap + offset
+      aPosition[i * 3 + 1] = y * gap + offset
+      aPosition[i * 3 + 2] = z * gap + offset
     }
 
     this.geometry.setAttribute('aPosition', new THREE.InstancedBufferAttribute(aPosition, 3))
 
     // Debug
     if (this.gui) {
-      const folder = this.gui.addFolder('Cube')
+      const folder = this.gui.addFolder('Material')
 
-      folder.add(this.state, 'matcap', [ 'black', 'red', 'green', 'blue', 'yellow' ])
-        .name('⏺ Matcap').onChange(() => this._setMatcap())
+      folder.add(this.material.uniforms.matcap, 'value', Object.keys(matcaps)).name('⏺ Color').onChange(next => {
+        this.material.uniforms.matcap.value = matcaps[next]
+      })
+
+      folder.close()
     }
-
+    
     if (this.gui) {
       const folder = this.gui.addFolder('Noise')
 
@@ -109,13 +105,6 @@ export default class Cube extends PlaygroundObject {
 
   tick({ deltaTime }) {
     this.material.uniforms.uTime.value += deltaTime * .001
-  }
-
-  _setMatcap() {
-    const matcap = this.loader.getItem(this.state.matcap)
-    matcap.encoding = THREE.sRGBEncoding
-
-    this.material.uniforms.matcap.value = matcap
   }
 
 }

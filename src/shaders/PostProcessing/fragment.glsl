@@ -20,8 +20,6 @@ void main() {
   uv.x += (random2d(vUv) - 0.5) * noiseDistance * (uMultiplier * 5.);
   uv.y += (random2d(vUv + 0.5) - 0.5) * noiseDistance * (uMultiplier * 5.);
 
-  // gl_FragColor = texture2D(tDiffuse, uv);
-
   // RGB shift
   vec2 offset = uMultiplier * vec2( cos(uAngle), sin(uAngle));
   vec4 cr = texture2D(tDiffuse, uv + offset);

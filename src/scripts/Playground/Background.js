@@ -9,26 +9,20 @@ import fragmentShader from 'Shaders/Background/fragment.glsl'
 
 export default class Background extends PlaygroundObject {
 
-  constructor(...args) {
-    super(...args)
-
-    this.state = { 
-      topLeft: '#EEEEEE', 
-      topRight: '#AAAAAA', 
-      bottomRight: '#FFFFFF', 
-      bottomLeft: '#DDDDDD', 
-    }
-  }
-
   initialize() {
     // Geometry
     this.geometry = new THREE.PlaneGeometry(2, 2, 1, 1)
-    this._setColors()
 
     // Material
     this.material = new THREE.ShaderMaterial({
       vertexColors: true,
       depthWrite: false,
+      uniforms: {
+        uColor1: { value: new THREE.Color('#EEEEEE') },
+        uColor2: { value: new THREE.Color('#CBCBCB') },
+        uColor3: { value: new THREE.Color('#FFFFFF') },
+        uColor4: { value: new THREE.Color('#DDDDDD') },
+      },
       vertexShader,
       fragmentShader,
     })
@@ -43,38 +37,13 @@ export default class Background extends PlaygroundObject {
     if (this.gui) {
       const folder = this.gui.addFolder('Background')
 
-      folder.addColor(this.state, 'topLeft').name('↖️ Top Left').onChange(() => this._setColors())
-      folder.addColor(this.state, 'topRight').name('↗️ Top Right').onChange(() => this._setColors())
-      folder.addColor(this.state, 'bottomRight').name('↘️ Bottom Right').onChange(() => this._setColors())
-      folder.addColor(this.state, 'bottomLeft').name('↙️ Bottom Left').onChange(() => this._setColors())
+      folder.addColor(this.material.uniforms.uColor1, 'value').name('↖️ Top Left')
+      folder.addColor(this.material.uniforms.uColor2, 'value').name('↗️ Top Right')
+      folder.addColor(this.material.uniforms.uColor3, 'value').name('↘️ Bottom Right')
+      folder.addColor(this.material.uniforms.uColor4, 'value').name('↙️ Bottom Left')
+
+      folder.close()
     }
-  }
-
-  _setColors() {
-    const topLeftColor = new THREE.Color(this.state.topLeft)
-    const topRightColor = new THREE.Color(this.state.topRight)
-    const bottomRightColor = new THREE.Color(this.state.bottomRight)
-    const bottomLeftColor = new THREE.Color(this.state.bottomLeft)
-
-    const colors = new Float32Array(4 * 3)
-    
-    colors[0] = topLeftColor.r
-    colors[1] = topLeftColor.g
-    colors[2] = topLeftColor.b
-    
-    colors[3] = topRightColor.r
-    colors[4] = topRightColor.g
-    colors[5] = topRightColor.b
-    
-    colors[9] = bottomRightColor.r
-    colors[10] = bottomRightColor.g
-    colors[11] = bottomRightColor.b
-
-    colors[6] = bottomLeftColor.r
-    colors[7] = bottomLeftColor.g
-    colors[8] = bottomLeftColor.b
-
-    this.geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
   }
 
 }
