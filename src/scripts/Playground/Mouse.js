@@ -84,7 +84,7 @@ export default class Mouse extends PlaygroundExtension {
     this.cursor.shiftX =(this.cursor.x - this.spherical.theta) * .1
     this.spherical.theta += this.cursor.shiftX
 
-    if (!this.gui) {
+    if (!this.props.orbitControls.enabled) {
       // Camera
       const cameraPosition = new THREE.Vector3()
       cameraPosition.setFromSpherical(this.spherical)

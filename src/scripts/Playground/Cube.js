@@ -85,18 +85,16 @@ export default class Cube extends PlaygroundObject {
     if (this.gui) {
       const folder = this.gui.addFolder('Material')
 
-      folder.add(this.material.uniforms.matcap, 'value', Object.keys(matcaps)).name('⏺ Color').onChange(next => {
+      folder.add(this.material.uniforms.matcap, 'value', Object.keys(matcaps)).name('⏺ MatCap').onChange(next => {
         this.material.uniforms.matcap.value = matcaps[next]
       })
-
-      folder.close()
     }
     
     if (this.gui) {
       const folder = this.gui.addFolder('Noise')
 
       folder.add(this.material.uniforms.uSmooth, 'value').name('📶 Smooth')
-      folder.add(this.material.uniforms.uScale, 'value', 0, 100, 1).name('📶 Scale')
+      folder.add(this.material.uniforms.uScale, 'value', 0, 100, 1).name('↔️ Scale')
       folder.add(this.material.uniforms.uSpeed.value, 'x', -1, 1, .01).name('↘️ Speed X')
       folder.add(this.material.uniforms.uSpeed.value, 'y', -1, 1, .01).name('⬆️ Speed Y')
       folder.add(this.material.uniforms.uSpeed.value, 'z', -1, 1, .01).name('↗️ Speed Z')

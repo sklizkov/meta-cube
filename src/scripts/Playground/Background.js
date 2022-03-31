@@ -41,8 +41,6 @@ export default class Background extends PlaygroundObject {
       folder.addColor(this.material.uniforms.uColor2, 'value').name('↗️ Top Right')
       folder.addColor(this.material.uniforms.uColor3, 'value').name('↘️ Bottom Right')
       folder.addColor(this.material.uniforms.uColor4, 'value').name('↙️ Bottom Left')
-
-      folder.close()
     }
   }
 

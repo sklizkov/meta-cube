@@ -47,21 +47,21 @@ export default class Shadow extends PlaygroundObject {
     // Debug
     if (this.gui) {
       const helper = new THREE.CameraHelper(this.camera)
+      helper.visible = false
       this.add(helper)
 
       const folder = this.gui.addFolder('Shadow')
 
-      folder.add(this.material.uniforms.uOpacity, 'value', 0, 1, .01).name('#️⃣ Opacity')
+      folder.add(helper, 'visible').name('🎦 Helper')
+      folder.add(this.material.uniforms.uOpacity, 'value', 0, 1, .01).name('*️⃣ Opacity')
       folder.add(this.material.uniforms.uStrength, 'value', 0, 1, .01).name('#️⃣ Blur')
-      folder.add(this.mesh.position, 'y', -5, 0, .01).name('#️⃣ Offset').onChange(next => {
+      folder.add(this.mesh.position, 'y', -5, 0, .01).name('↕️ Offset').onChange(next => {
         this.camera.far = Math.abs(next)
         this.camera.position.y = next
         this.camera.updateProjectionMatrix()
 
         helper.update()
       })
-
-      folder.close()
     }
   }
 

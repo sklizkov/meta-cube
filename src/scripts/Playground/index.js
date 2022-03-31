@@ -60,12 +60,16 @@ export default class Playground extends PlaygroundWorld {
       effectComposer: this.effectComposer, 
     })
 
+    // Orbit Controls
+    this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement)
+    this.orbitControls.enableDamping = false
+    this.orbitControls.enabled = false
+
     // Debug
     if (this.gui) {
-      // Orbit Controls
-      this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement)
-      this.orbitControls.enableDamping = false
-      this.orbitControls.enabled = true
+      const folder = this.gui.addFolder('Camera')
+
+      folder.add(this.orbitControls, 'enabled').name('🔄 Orbit Controls')
     }
   }
 
@@ -85,6 +89,7 @@ export default class Playground extends PlaygroundWorld {
       camera: this.camera,
       renderer: this.renderer,
       finalPass: this.postProcessing.finalPass,
+      orbitControls: this.orbitControls,
     })
 
     this.add(Cube, { amount: 20 })
@@ -105,7 +110,7 @@ export default class Playground extends PlaygroundWorld {
   }
 
   tick({ timestamp, deltaTime, elapsedTime, frameCount }) {
-    if (this.gui) this.orbitControls.update()
+    this.orbitControls.update()
 
     this.effectComposer.render()
   }
